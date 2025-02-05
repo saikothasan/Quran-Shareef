@@ -139,6 +139,11 @@ export async function getVerses(chapterId: string): Promise<Verse[]> {
 }
 
 export async function getAudioUrl(chapterId: string) {
-  return `https://verses.quran.com/abdul_basit_murattal/${chapterId.padStart(3, "0")}.mp3`
+  const paddedId = chapterId.padStart(3, "0")
+  return `https://verses.quran.com/abdul_basit_murattal/${paddedId}.mp3`
+}
+
+export function getFallbackAudioUrl(chapterId: string) {
+  return `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${chapterId}.mp3`
 }
 
