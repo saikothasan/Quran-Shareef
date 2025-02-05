@@ -1,57 +1,20 @@
 export interface Verse {
-  id: number
+  number: number
   text: string
   translation: string
 }
 
 export interface Chapter {
-  id: number
-  name_arabic: string
-  name_simple: string
-  translated_name: {
-    name: string
-  }
-  verses_count: number
-  revelation_place: string
-}
-
-export interface ChapterDetail {
-  id: number
+  number: number
   name: string
-  transliteration: string
-  translation: string
-  type: string
-  total_verses: number
+  englishName: string
+  englishNameTranslation: string
+  numberOfAyahs: number
+  revelationType: string
+}
+
+export interface ChapterDetail extends Chapter {
   verses: Verse[]
-}
-
-interface QuranAPIResponse {
-  chapters: Chapter[]
-}
-
-interface ChapterAPIResponse {
-  chapter: {
-    id: number
-    name_arabic: string
-    name_simple: string
-    translated_name: {
-      name: string
-    }
-    verses_count: number
-    revelation_place: string
-  }
-}
-
-interface VersesAPIResponse {
-  verses: Array<{
-    id: number
-    verse_number: number
-    verse_key: string
-    text_uthmani: string
-    translations: Array<{
-      text: string
-    }>
-  }>
 }
 
 // Cache the chapters data
@@ -63,24 +26,26 @@ export async function getChapters(): Promise<Chapter[]> {
   }
 
   try {
-    const response = await fetch("https://api.quran.com/api/v4/chapters?language=bn", {
-      headers: {
-        Accept: "application/json",
-      },
-    })
-
+    const response = await fetch("https://api.alquran.cloud/v1/surah")
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
-    const data = (await response.json()) as QuranAPIResponse
-
-    if (!data.chapters || !Array.isArray(data.chapters)) {
+    const data = await response.json()
+    if (!data.data || !Array.isArray(data.data)) {
       throw new Error("Invalid API response format")
     }
 
-    chaptersCache = data.chapters
-    return data.chapters
+    chaptersCache = data.data.map((chapter: any) => ({
+      number: chapter.number,
+      name: chapter.name,
+      englishName: chapter.englishName,
+      englishNameTranslation: chapter.englishNameTranslation,
+      numberOfAyahs: chapter.numberOfAyahs,
+      revelationType: chapter.revelationType,
+    }))
+
+    return chaptersCache
   } catch (error) {
     console.error("Error fetching chapters:", error)
     throw new Error("Failed to load chapters. Please try again later.")
@@ -88,44 +53,42 @@ export async function getChapters(): Promise<Chapter[]> {
 }
 
 // Cache the chapter details
-const chapterDetailsCache = new Map<string, ChapterDetail>()
+const chapterDetailsCache = new Map<number, ChapterDetail>()
 
 export async function getChapter(id: string): Promise<ChapterDetail> {
-  const cached = chapterDetailsCache.get(id)
+  const chapterId = Number.parseInt(id, 10)
+  const cached = chapterDetailsCache.get(chapterId)
   if (cached) {
     return cached
   }
 
   try {
     const [chapterResponse, versesResponse] = await Promise.all([
-      fetch(`https://api.quran.com/api/v4/chapters/${id}?language=bn`),
-      fetch(
-        `https://api.quran.com/api/v4/verses/by_chapter/${id}?language=bn&words=false&translations=161&fields=text_uthmani`,
-      ),
+      fetch(`https://api.alquran.cloud/v1/surah/${chapterId}`),
+      fetch(`https://api.alquran.cloud/v1/surah/${chapterId}/bn.bengali`),
     ])
 
     if (!chapterResponse.ok || !versesResponse.ok) {
       throw new Error(`Failed to fetch chapter data: ${chapterResponse.status}, ${versesResponse.status}`)
     }
 
-    const chapterData = (await chapterResponse.json()) as { chapter: ChapterAPIResponse["chapter"] }
-    const versesData = (await versesResponse.json()) as VersesAPIResponse
+    const chapterData = await chapterResponse.json()
+    const versesData = await versesResponse.json()
+
+    if (!chapterData.data || !versesData.data || !versesData.data.ayahs) {
+      throw new Error("Invalid API response format")
+    }
 
     const chapterDetail: ChapterDetail = {
-      id: chapterData.chapter.id,
-      name: chapterData.chapter.name_arabic,
-      transliteration: chapterData.chapter.name_simple,
-      translation: chapterData.chapter.translated_name.name,
-      type: chapterData.chapter.revelation_place,
-      total_verses: chapterData.chapter.verses_count,
-      verses: versesData.verses.map((verse) => ({
-        id: verse.verse_number,
-        text: verse.text_uthmani,
-        translation: verse.translations[0]?.text || "",
+      ...chapterData.data,
+      verses: versesData.data.ayahs.map((ayah: any) => ({
+        number: ayah.numberInSurah,
+        text: ayah.text,
+        translation: ayah.translation,
       })),
     }
 
-    chapterDetailsCache.set(id, chapterDetail)
+    chapterDetailsCache.set(chapterId, chapterDetail)
     return chapterDetail
   } catch (error) {
     console.error(`Error fetching chapter ${id}:`, error)
@@ -138,12 +101,11 @@ export async function getVerses(chapterId: string): Promise<Verse[]> {
   return chapter.verses
 }
 
-export async function getAudioUrl(chapterId: string) {
-  const paddedId = chapterId.padStart(3, "0")
-  return `https://verses.quran.com/abdul_basit_murattal/${paddedId}.mp3`
+export function getAudioUrl(chapterId: string) {
+  return `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${chapterId}.mp3`
 }
 
 export function getFallbackAudioUrl(chapterId: string) {
-  return `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${chapterId}.mp3`
+  return `https://cdn.islamic.network/quran/audio-surah/128/ar.ahmedajamy/${chapterId}.mp3`
 }
 
