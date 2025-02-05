@@ -28,10 +28,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-function LoadingSkeleton() {
+function LoadingSkeleton({ totalVerses }: { totalVerses: number }) {
   return (
     <div className="space-y-6">
-      {[...Array(10)].map((_, i) => (
+      {[...Array(totalVerses)].map((_, i) => (
         <div key={i} className="p-4 rounded-lg bg-gray-50">
           <Skeleton className="h-8 w-full mb-4" />
           <Skeleton className="h-4 w-3/4 mb-2" />
@@ -120,7 +120,7 @@ async function SurahContent({ id }: { id: string }) {
 export default function SurahPage({ params }: PageProps) {
   return (
     <div className="min-h-screen bg-background">
-      <Suspense fallback={<LoadingSkeleton />}>
+      <Suspense fallback={<LoadingSkeleton totalVerses={20} />}>
         <SurahContent id={params.id} />
       </Suspense>
     </div>
