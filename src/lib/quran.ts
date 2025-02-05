@@ -25,6 +25,35 @@ export interface ChapterDetail {
   verses: Verse[]
 }
 
+interface QuranAPIResponse {
+  chapters: Chapter[]
+}
+
+interface ChapterAPIResponse {
+  chapter: {
+    id: number
+    name_arabic: string
+    name_simple: string
+    translated_name: {
+      name: string
+    }
+    verses_count: number
+    revelation_place: string
+  }
+}
+
+interface VersesAPIResponse {
+  verses: Array<{
+    id: number
+    verse_number: number
+    verse_key: string
+    text_uthmani: string
+    translations: Array<{
+      text: string
+    }>
+  }>
+}
+
 // Cache the chapters data
 let chaptersCache: Chapter[] | null = null
 
@@ -47,7 +76,7 @@ export async function getChapters(): Promise<Chapter[]> {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
-    const data = await response.json()
+    const data: QuranAPIResponse = await response.json()
 
     if (!data.chapters || !Array.isArray(data.chapters)) {
       throw new Error("Invalid API response format")
@@ -77,7 +106,7 @@ export async function getChapter(id: string): Promise<ChapterDetail> {
     if (!chapterResponse.ok) {
       throw new Error(`Failed to fetch chapter info: ${chapterResponse.status}`)
     }
-    const chapterInfo = await chapterResponse.json()
+    const chapterInfo: ChapterAPIResponse = await chapterResponse.json()
 
     // Then get the verses from the verses API
     const versesResponse = await fetch(
@@ -86,17 +115,17 @@ export async function getChapter(id: string): Promise<ChapterDetail> {
     if (!versesResponse.ok) {
       throw new Error(`Failed to fetch verses: ${versesResponse.status}`)
     }
-    const versesData = await versesResponse.json()
+    const versesData: VersesAPIResponse = await versesResponse.json()
 
     // Combine the data
     const chapterDetail: ChapterDetail = {
-      id: Number.parseInt(id),
+      id: chapterInfo.chapter.id,
       name: chapterInfo.chapter.name_arabic,
       transliteration: chapterInfo.chapter.name_simple,
       translation: chapterInfo.chapter.translated_name.name,
       type: chapterInfo.chapter.revelation_place,
       total_verses: chapterInfo.chapter.verses_count,
-      verses: versesData.verses.map((verse: any) => ({
+      verses: versesData.verses.map((verse) => ({
         id: verse.verse_number,
         text: verse.text_uthmani,
         translation: verse.translations[0]?.text || "",
