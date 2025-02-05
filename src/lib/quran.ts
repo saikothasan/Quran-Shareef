@@ -73,7 +73,7 @@ export async function getChapters(): Promise<Chapter[]> {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
-    const data: QuranAPIResponse = await response.json()
+    const data = (await response.json()) as QuranAPIResponse
 
     if (!data.chapters || !Array.isArray(data.chapters)) {
       throw new Error("Invalid API response format")
@@ -108,18 +108,16 @@ export async function getChapter(id: string): Promise<ChapterDetail> {
       throw new Error(`Failed to fetch chapter data: ${chapterResponse.status}, ${versesResponse.status}`)
     }
 
-    const [chapterInfo, versesData]: [ChapterAPIResponse, VersesAPIResponse] = await Promise.all([
-      chapterResponse.json(),
-      versesResponse.json(),
-    ])
+    const chapterData = (await chapterResponse.json()) as { chapter: ChapterAPIResponse["chapter"] }
+    const versesData = (await versesResponse.json()) as VersesAPIResponse
 
     const chapterDetail: ChapterDetail = {
-      id: chapterInfo.chapter.id,
-      name: chapterInfo.chapter.name_arabic,
-      transliteration: chapterInfo.chapter.name_simple,
-      translation: chapterInfo.chapter.translated_name.name,
-      type: chapterInfo.chapter.revelation_place,
-      total_verses: chapterInfo.chapter.verses_count,
+      id: chapterData.chapter.id,
+      name: chapterData.chapter.name_arabic,
+      transliteration: chapterData.chapter.name_simple,
+      translation: chapterData.chapter.translated_name.name,
+      type: chapterData.chapter.revelation_place,
+      total_verses: chapterData.chapter.verses_count,
       verses: versesData.verses.map((verse) => ({
         id: verse.verse_number,
         text: verse.text_uthmani,
