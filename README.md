@@ -1,8 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Quran Shareef
+
+A modern, responsive Quran application built with Next.js 14, featuring Arabic text, translations, and audio recitations.
+
+![Quran Shareef](https://sjc.microlink.io/rnOiqdQVqwjhq4ySNOee98E43B879uoQ7bwoaTcj0m62ZX4Ma3MoOuffslK-AxTS8Qz3A586GXFX13YCBVT8_Q.jpeg)
+
+## Features
+
+- 📖 Complete Quran text with Arabic and Bengali translations
+- 🎧 Audio recitations with player controls
+- 🔍 Search functionality for Surahs
+- 📱 Responsive design for all devices
+- ⚡ Fast page loads with Edge Runtime
+- 🌙 Clean, modern UI with Tailwind CSS
+- ♿ Accessibility features
+
+## Tech Stack
+
+- [Next.js 14](https://nextjs.org/) - React framework
+- [Tailwind CSS](https://tailwindcss.com/) - Styling
+- [shadcn/ui](https://ui.shadcn.com/) - UI components
+- [Quran.com API](https://quran.api-docs.io/) - Quran data
+- [Vercel](https://vercel.com) - Deployment
 
 ## Getting Started
 
-First, run the development server:
+First, clone the repository:
+
+```bash
+git clone https://github.com/saikothasan/Quran-Shareef.git
+cd Quran-Shareef
+```
+
+Install dependencies:
+
+```bash
+npm install
+# or
+yarn
+# or
+pnpm install
+```
+
+Run the development server:
 
 ```bash
 npm run dev
@@ -10,27 +49,62 @@ npm run dev
 yarn dev
 # or
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+Quran-Shareef/
+├── app/                    # Next.js app directory
+│   ├── page.tsx           # Home page
+│   └── surah/[id]/        # Dynamic surah pages
+├── components/            # React components
+│   ├── ui/               # shadcn/ui components
+│   └── audio-player.tsx  # Custom audio player
+├── lib/                  # Utility functions
+│   └── quran.ts         # Quran API functions
+├── public/              # Static files
+└── styles/             # Global styles
+```
 
-## Learn More
+## API Integration
 
-To learn more about Next.js, take a look at the following resources:
+The application uses the Quran.com API for fetching:
+- List of all surahs
+- Surah details and verses
+- Translations
+- Audio recitations
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Deployment
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+The project is configured for deployment on Vercel or Cloudflare Pages with Edge Runtime support.
 
-## Deploy on Vercel
+To deploy on Vercel:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+vercel
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## Acknowledgments
+
+- [Quran.com](https://quran.com) for providing the API
+- [Islamic Network](https://islamic.network) for additional audio sources
+- [shadcn](https://twitter.com/shadcn) for the amazing UI components
+
+## Author
+
+- Saikot Hasan ([@saikothasan](https://github.com/saikothasan))
+
+## Support
+
+If you find this project helpful, please consider giving it a ⭐️
