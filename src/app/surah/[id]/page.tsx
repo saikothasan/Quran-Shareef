@@ -111,6 +111,32 @@ async function SurahContent({ id }: { id: string }) {
           ))}
         </div>
       </main>
+
+      <div className="bg-muted py-2 mt-8">
+        <div className="container mx-auto px-4 flex justify-between items-center">
+          {prevId ? (
+            <Link href={`/surah/${prevId}`}>
+              <Button variant="ghost" className="text-primary">
+                <ChevronLeft className="h-4 w-4 mr-2" />
+                Previous Surah
+              </Button>
+            </Link>
+          ) : (
+            <div />
+          )}
+
+          {nextId ? (
+            <Link href={`/surah/${nextId}`}>
+              <Button variant="ghost" className="text-primary">
+                Next Surah
+                <ChevronRight className="h-4 w-4 ml-2" />
+              </Button>
+            </Link>
+          ) : (
+            <div />
+          )}
+        </div>
+      </div>
     </>
   )
 }
