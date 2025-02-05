@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Suspense } from "react"
 import type { Metadata } from "next"
-import React from "react" // Import React
+import React from "react"
 
 export const runtime = "edge"
 
@@ -20,11 +20,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const chapter = await getChapter(params.id)
 
   return {
-    title: `Surah ${chapter.name} (${chapter.transliteration})`,
-    description: `Read Surah ${chapter.name} (${chapter.transliteration}) with translation. ${chapter.total_verses} verses. ${chapter.type} surah.`,
+    title: `Surah ${chapter.englishName} (${chapter.name})`,
+    description: `Read Surah ${chapter.englishName} (${chapter.name}) with translation. ${chapter.numberOfAyahs} verses. ${chapter.revelationType} surah.`,
     openGraph: {
-      title: `Surah ${chapter.name} (${chapter.transliteration}) | Quraan Shareef`,
-      description: `Read Surah ${chapter.name} (${chapter.transliteration}) with translation. ${chapter.total_verses} verses. ${chapter.type} surah.`,
+      title: `Surah ${chapter.englishName} (${chapter.name}) | Quraan Shareef`,
+      description: `Read Surah ${chapter.englishName} (${chapter.name}) with translation. ${chapter.numberOfAyahs} verses. ${chapter.revelationType} surah.`,
     },
   }
 }
@@ -53,10 +53,10 @@ function VersesList({ verses, initialCount }: { verses: any[]; initialCount: num
   return (
     <>
       {verses.slice(0, visibleVerses).map((verse, index) => (
-        <div key={verse.id} className={`p-4 rounded-lg ${index % 2 === 0 ? "bg-muted" : "bg-background"}`}>
+        <div key={verse.number} className={`p-4 rounded-lg ${index % 2 === 0 ? "bg-muted" : "bg-background"}`}>
           <div className="text-right mb-4">
             <span className="font-arabic text-2xl leading-loose">{verse.text}</span>
-            <span className="text-muted-foreground text-sm ml-2">({verse.id})</span>
+            <span className="text-muted-foreground text-sm ml-2">({verse.number})</span>
           </div>
 
           <div className="space-y-2 text-sm">
@@ -76,21 +76,22 @@ function VersesList({ verses, initialCount }: { verses: any[]; initialCount: num
 }
 
 async function SurahContent({ id }: { id: string }) {
-  const [chapter, audioUrl] = await Promise.all([getChapter(id), getAudioUrl(id)])
+  const chapter = await getChapter(id)
+  const audioUrl = getAudioUrl(id)
   const fallbackAudioUrl = getFallbackAudioUrl(id)
 
-  const prevId = chapter.id > 1 ? chapter.id - 1 : null
-  const nextId = chapter.id < 114 ? chapter.id + 1 : null
+  const prevId = chapter.number > 1 ? chapter.number - 1 : null
+  const nextId = chapter.number < 114 ? chapter.number + 1 : null
 
   return (
     <>
       <header className="bg-primary text-primary-foreground py-4 text-center">
         <div className="container mx-auto px-4">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">
-            {chapter.name} - {chapter.transliteration}
+            {chapter.name} - {chapter.englishName}
           </h1>
           <p className="text-sm md:text-base mb-2">
-            {chapter.translation} • {chapter.total_verses} Verses • {chapter.type}
+            {chapter.englishNameTranslation} • {chapter.numberOfAyahs} Verses • {chapter.revelationType}
           </p>
 
           <div className="mt-4 text-xl md:text-2xl font-arabic">﴿ بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ ﴾</div>
