@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Suspense } from "react"
 import type { Metadata } from "next"
+import React from "react" // Import React
 
 export const runtime = "edge"
 
@@ -39,6 +40,38 @@ function LoadingSkeleton() {
         </div>
       ))}
     </div>
+  )
+}
+
+function VersesList({ verses, initialCount }: { verses: any[]; initialCount: number }) {
+  const [visibleVerses, setVisibleVerses] = React.useState(initialCount)
+
+  const loadMore = () => {
+    setVisibleVerses((prevCount) => Math.min(prevCount + 10, verses.length))
+  }
+
+  return (
+    <>
+      {verses.slice(0, visibleVerses).map((verse, index) => (
+        <div key={verse.id} className={`p-4 rounded-lg ${index % 2 === 0 ? "bg-muted" : "bg-background"}`}>
+          <div className="text-right mb-4">
+            <span className="font-arabic text-2xl leading-loose">{verse.text}</span>
+            <span className="text-muted-foreground text-sm ml-2">({verse.id})</span>
+          </div>
+
+          <div className="space-y-2 text-sm">
+            <p className="text-foreground">{verse.translation}</p>
+          </div>
+        </div>
+      ))}
+      {visibleVerses < verses.length && (
+        <div className="text-center mt-6">
+          <Button onClick={loadMore} variant="outline">
+            Load More Verses
+          </Button>
+        </div>
+      )}
+    </>
   )
 }
 
@@ -97,18 +130,7 @@ async function SurahContent({ id }: { id: string }) {
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-6">
-          {chapter.verses.map((verse, index) => (
-            <div key={verse.id} className={`p-4 rounded-lg ${index % 2 === 0 ? "bg-muted" : "bg-background"}`}>
-              <div className="text-right mb-4">
-                <span className="font-arabic text-2xl leading-loose">{verse.text}</span>
-                <span className="text-muted-foreground text-sm ml-2">({verse.id})</span>
-              </div>
-
-              <div className="space-y-2 text-sm">
-                <p className="text-foreground">{verse.translation}</p>
-              </div>
-            </div>
-          ))}
+          <VersesList verses={chapter.verses} initialCount={10} />
         </div>
       </main>
 
