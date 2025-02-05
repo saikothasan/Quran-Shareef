@@ -18,7 +18,7 @@ function LoadingSkeleton() {
       <Skeleton className="h-12 w-3/4 mx-auto" />
       <Skeleton className="h-8 w-1/2 mx-auto" />
       <Skeleton className="h-24 w-full" />
-      {[...Array(10)].map((_, i) => (
+      {[...Array(20)].map((_, i) => (
         <div key={i} className="space-y-2">
           <Skeleton className="h-6 w-full" />
           <Skeleton className="h-4 w-3/4" />
