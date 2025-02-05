@@ -1,4 +1,4 @@
-import "./globals.css"
+import "@/styles/globals.css"
 import { Inter } from "next/font/google"
 import type React from "react"
 import type { Metadata } from "next"
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     siteName: "Quraan Shareef",
     images: [
       {
-        url: "https://quran-shareef.pages.dev/quran_7337555.png", // Replace with your actual Open Graph image
+        url: "https://quran-shareef.pages.dev/", // Replace with your actual Open Graph image
         width: 1200,
         height: 630,
         alt: "Quraan Shareef",
@@ -45,6 +45,9 @@ export const metadata: Metadata = {
     apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest", // Make sure to create this file in your public folder
+  other: {
+    "google-site-verification": "KEFnhFSHJewJRRzfWnTjsmHd4hkOV1_2_KF4SoGwaBY",
+  },
 }
 
 export default function RootLayout({
@@ -54,11 +57,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+        <meta name="google-site-verification" content="KEFnhFSHJewJRRzfWnTjsmHd4hkOV1_2_KF4SoGwaBY" />
+      </head>
       <body className={inter.className}>{children}</body>
     </html>
   )
 }
 
-
-
-import './globals.css'
