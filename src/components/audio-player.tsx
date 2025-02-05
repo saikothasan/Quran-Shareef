@@ -27,17 +27,26 @@ export function AudioPlayer({ audioUrl, fallbackUrl }: AudioPlayerProps) {
       setDuration(audio.duration)
     }
 
+    const handleLoadStart = () => {
+      setError(null)
+    }
+
     const handleError = () => {
-      setError("Failed to load audio. Please try again later.")
+      console.error("Audio error:", audio.error)
+      setError("Failed to load audio. Trying fallback source...")
       if (fallbackUrl && audioUrl !== fallbackUrl) {
         audio.src = fallbackUrl
+      } else {
+        setError("Failed to load audio. Please try again later.")
       }
     }
 
+    audio.addEventListener("loadstart", handleLoadStart)
     audio.addEventListener("canplay", handleCanPlay)
     audio.addEventListener("error", handleError)
 
     return () => {
+      audio.removeEventListener("loadstart", handleLoadStart)
       audio.removeEventListener("canplay", handleCanPlay)
       audio.removeEventListener("error", handleError)
     }
