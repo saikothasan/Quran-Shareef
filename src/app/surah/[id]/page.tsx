@@ -48,7 +48,6 @@ async function SurahContent({ id }: { id: string }) {
   const prevId = chapter.id > 1 ? chapter.id - 1 : null
   const nextId = chapter.id < 114 ? chapter.id + 1 : null
 
-  // Fallback audio URL
   const fallbackAudioUrl = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${id}.mp3`
 
   return (
@@ -120,7 +119,7 @@ async function SurahContent({ id }: { id: string }) {
 export default function SurahPage({ params }: PageProps) {
   return (
     <div className="min-h-screen bg-background">
-      <Suspense fallback={<LoadingSkeleton totalVerses={20} />}>
+      <Suspense fallback={<LoadingSkeleton totalVerses={286} />}>
         <SurahContent id={params.id} />
       </Suspense>
     </div>
