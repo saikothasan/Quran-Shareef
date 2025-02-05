@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     siteName: "Quraan Shareef",
     images: [
       {
-        url: "https://quran-shareef.pages.dev/icon.png", // Replace with your actual Open Graph image
+        url: "https://quran-shareef.pages.dev/quran_7337555.png", // Replace with your actual Open Graph image
         width: 1200,
         height: 630,
         alt: "Quraan Shareef",
