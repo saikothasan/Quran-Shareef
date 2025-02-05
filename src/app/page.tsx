@@ -39,16 +39,16 @@ async function SurahGrid() {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {chapters.map((chapter) => (
-          <Link href={`/surah/${chapter.id}`} key={chapter.id}>
+          <Link href={`/surah/${chapter.number}`} key={chapter.number}>
             <Card className="hover:bg-muted/50 transition-colors">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-sm text-muted-foreground">#{chapter.id}</span>
-                  <span className="text-sm text-muted-foreground">{chapter.verses_count} verses</span>
+                  <span className="text-sm text-muted-foreground">#{chapter.number}</span>
+                  <span className="text-sm text-muted-foreground">{chapter.numberOfAyahs} verses</span>
                 </div>
-                <div className="text-xl font-arabic mb-1">{chapter.name_arabic}</div>
+                <div className="text-xl font-arabic mb-1">{chapter.name}</div>
                 <div className="text-sm text-muted-foreground">
-                  {chapter.name_simple} • {chapter.translated_name.name}
+                  {chapter.englishName} • {chapter.englishNameTranslation}
                 </div>
               </CardContent>
             </Card>
