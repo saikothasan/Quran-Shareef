@@ -98,18 +98,21 @@ async function SurahContent({ id }: { id: string }) {
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-6">
-          {chapter.verses.map((verse, index) => (
-            <div key={verse.id} className={`p-4 rounded-lg ${index % 2 === 0 ? "bg-muted" : "bg-background"}`}>
-              <div className="text-right mb-4">
-                <span className="font-arabic text-2xl leading-loose">{verse.text}</span>
-                <span className="text-muted-foreground text-sm ml-2">({verse.id})</span>
-              </div>
+          {[...Array(chapter.total_verses)].map((_, index) => {
+            const verse = chapter.verses[index]
+            return (
+              <div key={index} className={`p-4 rounded-lg ${index % 2 === 0 ? "bg-muted" : "bg-background"}`}>
+                <div className="text-right mb-4">
+                  <span className="font-arabic text-2xl leading-loose">{verse?.text || "Loading..."}</span>
+                  <span className="text-muted-foreground text-sm ml-2">({index + 1})</span>
+                </div>
 
-              <div className="space-y-2 text-sm">
-                <p className="text-foreground">{verse.translation}</p>
+                <div className="space-y-2 text-sm">
+                  <p className="text-foreground">{verse?.translation || "Translation loading..."}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </main>
     </>
