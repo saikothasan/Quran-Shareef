@@ -33,22 +33,23 @@ export async function getChapters(): Promise<Chapter[]> {
 }
 
 export async function getChapter(id: string): Promise<ChapterDetail> {
-  const [chapterResponse, versesResponse] = await Promise.all([
+  const [chapterResponse, versesResponse, translationResponse] = await Promise.all([
     fetch(`https://api.quran.com/api/v4/chapters/${id}?language=bn`),
     fetch(`https://api.quran.com/api/v4/quran/verses/uthmani?chapter_number=${id}`),
+    fetch(`https://api.quran.com/api/v4/quran/translations/161?chapter_number=${id}`),
   ])
 
-  if (!chapterResponse.ok || !versesResponse.ok) {
-    throw new Error(`Failed to fetch chapter data: ${chapterResponse.status}, ${versesResponse.status}`)
+  if (!chapterResponse.ok || !versesResponse.ok || !translationResponse.ok) {
+    throw new Error(
+      `Failed to fetch chapter data: ${chapterResponse.status}, ${versesResponse.status}, ${translationResponse.status}`,
+    )
   }
 
-  const [chapterData, versesData] = await Promise.all([chapterResponse.json(), versesResponse.json()])
-
-  const translationResponse = await fetch(`https://api.quran.com/api/v4/quran/translations/161?chapter_number=${id}`)
-  if (!translationResponse.ok) {
-    throw new Error(`Failed to fetch translations: ${translationResponse.status}`)
-  }
-  const translationData = await translationResponse.json()
+  const [chapterData, versesData, translationData] = await Promise.all([
+    chapterResponse.json(),
+    versesResponse.json(),
+    translationResponse.json(),
+  ])
 
   return {
     ...chapterData.chapter,
@@ -61,6 +62,6 @@ export async function getChapter(id: string): Promise<ChapterDetail> {
 }
 
 export function getAudioUrl(chapterId: string): string {
-  return `https://verses.quran.com/abdul_basit_murattal/${chapterId.padStart(3, "0")}.mp3`
+  return `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${chapterId}.mp3`
 }
 
