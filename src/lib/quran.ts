@@ -19,6 +19,27 @@ export interface ChapterDetail extends Chapter {
   verses: Verse[]
 }
 
+interface ChaptersResponse {
+  chapters: Chapter[]
+}
+
+interface ChapterResponse {
+  chapter: Chapter
+}
+
+interface VersesResponse {
+  verses: {
+    verse_number: number
+    text_uthmani: string
+  }[]
+}
+
+interface TranslationResponse {
+  translations: {
+    text: string
+  }[]
+}
+
 export async function getChapters(): Promise<Chapter[]> {
   const response = await fetch("https://api.quran.com/api/v4/chapters?language=bn", {
     headers: { Accept: "application/json" },
@@ -28,7 +49,7 @@ export async function getChapters(): Promise<Chapter[]> {
     throw new Error(`HTTP error! status: ${response.status}`)
   }
 
-  const data = await response.json()
+  const data: ChaptersResponse = await response.json()
   return data.chapters
 }
 
@@ -45,15 +66,12 @@ export async function getChapter(id: string): Promise<ChapterDetail> {
     )
   }
 
-  const [chapterData, versesData, translationData] = await Promise.all([
-    chapterResponse.json(),
-    versesResponse.json(),
-    translationResponse.json(),
-  ])
+  const [chapterData, versesData, translationData]: [ChapterResponse, VersesResponse, TranslationResponse] =
+    await Promise.all([chapterResponse.json(), versesResponse.json(), translationResponse.json()])
 
   return {
     ...chapterData.chapter,
-    verses: versesData.verses.map((verse: any, index: number) => ({
+    verses: versesData.verses.map((verse, index) => ({
       id: verse.verse_number,
       text: verse.text_uthmani,
       translation: translationData.translations[index]?.text || "",
