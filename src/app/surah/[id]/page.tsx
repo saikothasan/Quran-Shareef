@@ -1,6 +1,6 @@
 import { AudioPlayer } from "@/components/audio-player"
 import { Button } from "@/components/ui/button"
-import { getChapter, getAudioUrl } from "@/lib/quran"
+import { getChapter, getAudioUrl, getFallbackAudioUrl } from "@/lib/quran"
 import Link from "next/link"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Skeleton } from "@/components/ui/skeleton"
@@ -44,12 +44,10 @@ function LoadingSkeleton() {
 
 async function SurahContent({ id }: { id: string }) {
   const [chapter, audioUrl] = await Promise.all([getChapter(id), getAudioUrl(id)])
+  const fallbackAudioUrl = getFallbackAudioUrl(id)
 
   const prevId = chapter.id > 1 ? chapter.id - 1 : null
   const nextId = chapter.id < 114 ? chapter.id + 1 : null
-
-  // Fallback audio URL
-  const fallbackAudioUrl = `https://cdn.islamic.network/quran/audio/128/ar.alafasy/${id}.mp3`
 
   return (
     <>
