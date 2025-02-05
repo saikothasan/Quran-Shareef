@@ -17,6 +17,32 @@ export interface ChapterDetail extends Chapter {
   verses: Verse[]
 }
 
+interface QuranAPIResponse {
+  code: number
+  status: string
+  data: Chapter[]
+}
+
+interface ChapterAPIResponse {
+  code: number
+  status: string
+  data: Chapter
+}
+
+interface VersesAPIResponse {
+  code: number
+  status: string
+  data: {
+    number: number
+    ayahs: Array<{
+      number: number
+      text: string
+      numberInSurah: number
+      translation: string
+    }>
+  }
+}
+
 // Cache the chapters data
 let chaptersCache: Chapter[] | null = null
 
@@ -31,12 +57,13 @@ export async function getChapters(): Promise<Chapter[]> {
       throw new Error(`HTTP error! status: ${response.status}`)
     }
 
-    const data = await response.json()
+    const data = (await response.json()) as QuranAPIResponse
+
     if (!data.data || !Array.isArray(data.data)) {
       throw new Error("Invalid API response format")
     }
 
-    chaptersCache = data.data.map((chapter: any) => ({
+    chaptersCache = data.data.map((chapter: Chapter) => ({
       number: chapter.number,
       name: chapter.name,
       englishName: chapter.englishName,
@@ -72,8 +99,8 @@ export async function getChapter(id: string): Promise<ChapterDetail> {
       throw new Error(`Failed to fetch chapter data: ${chapterResponse.status}, ${versesResponse.status}`)
     }
 
-    const chapterData = await chapterResponse.json()
-    const versesData = await versesResponse.json()
+    const chapterData = (await chapterResponse.json()) as ChapterAPIResponse
+    const versesData = (await versesResponse.json()) as VersesAPIResponse
 
     if (!chapterData.data || !versesData.data || !versesData.data.ayahs) {
       throw new Error("Invalid API response format")
@@ -81,7 +108,7 @@ export async function getChapter(id: string): Promise<ChapterDetail> {
 
     const chapterDetail: ChapterDetail = {
       ...chapterData.data,
-      verses: versesData.data.ayahs.map((ayah: any) => ({
+      verses: versesData.data.ayahs.map((ayah) => ({
         number: ayah.numberInSurah,
         text: ayah.text,
         translation: ayah.translation,
@@ -101,11 +128,11 @@ export async function getVerses(chapterId: string): Promise<Verse[]> {
   return chapter.verses
 }
 
-export function getAudioUrl(chapterId: string) {
+export function getAudioUrl(chapterId: string): string {
   return `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${chapterId}.mp3`
 }
 
-export function getFallbackAudioUrl(chapterId: string) {
+export function getFallbackAudioUrl(chapterId: string): string {
   return `https://cdn.islamic.network/quran/audio-surah/128/ar.ahmedajamy/${chapterId}.mp3`
 }
 
