@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 function LoadingSkeleton({ totalVerses }: { totalVerses: number }) {
   return (
     <div className="space-y-6">
-      {[...Array(chapter.total_verses)].map((_, i) => (
+      {[...Array(total_verses)].map((_, i) => (
         <div key={i} className="p-4 rounded-lg bg-gray-50">
           <Skeleton className="h-8 w-full mb-4" />
           <Skeleton className="h-4 w-3/4 mb-2" />
