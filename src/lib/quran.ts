@@ -67,9 +67,6 @@ export async function getChapters(): Promise<Chapter[]> {
       headers: {
         Accept: "application/json",
       },
-      next: {
-        revalidate: 3600, // Cache for 1 hour
-      },
     })
 
     if (!response.ok) {
@@ -94,30 +91,28 @@ export async function getChapters(): Promise<Chapter[]> {
 const chapterDetailsCache = new Map<string, ChapterDetail>()
 
 export async function getChapter(id: string): Promise<ChapterDetail> {
-  // Check cache first
   const cached = chapterDetailsCache.get(id)
   if (cached) {
     return cached
   }
 
   try {
-    // First try to get the chapter info from Quran.com API
-    const chapterResponse = await fetch(`https://api.quran.com/api/v4/chapters/${id}?language=bn`)
-    if (!chapterResponse.ok) {
-      throw new Error(`Failed to fetch chapter info: ${chapterResponse.status}`)
-    }
-    const chapterInfo: ChapterAPIResponse = await chapterResponse.json()
+    const [chapterResponse, versesResponse] = await Promise.all([
+      fetch(`https://api.quran.com/api/v4/chapters/${id}?language=bn`),
+      fetch(
+        `https://api.quran.com/api/v4/verses/by_chapter/${id}?language=bn&words=false&translations=161&fields=text_uthmani`,
+      ),
+    ])
 
-    // Then get the verses from the verses API
-    const versesResponse = await fetch(
-      `https://api.quran.com/api/v4/verses/by_chapter/${id}?language=bn&words=false&translations=161&fields=text_uthmani`,
-    )
-    if (!versesResponse.ok) {
-      throw new Error(`Failed to fetch verses: ${versesResponse.status}`)
+    if (!chapterResponse.ok || !versesResponse.ok) {
+      throw new Error(`Failed to fetch chapter data: ${chapterResponse.status}, ${versesResponse.status}`)
     }
-    const versesData: VersesAPIResponse = await versesResponse.json()
 
-    // Combine the data
+    const [chapterInfo, versesData]: [ChapterAPIResponse, VersesAPIResponse] = await Promise.all([
+      chapterResponse.json(),
+      versesResponse.json(),
+    ])
+
     const chapterDetail: ChapterDetail = {
       id: chapterInfo.chapter.id,
       name: chapterInfo.chapter.name_arabic,
@@ -132,7 +127,6 @@ export async function getChapter(id: string): Promise<ChapterDetail> {
       })),
     }
 
-    // Cache the result
     chapterDetailsCache.set(id, chapterDetail)
     return chapterDetail
   } catch (error) {
