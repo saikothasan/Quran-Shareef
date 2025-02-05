@@ -7,6 +7,8 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Suspense } from "react"
 import type { Metadata } from "next"
 
+export const runtime = "edge"
+
 interface PageProps {
   params: {
     id: string
