@@ -31,13 +31,27 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 function LoadingSkeleton({ totalVerses }: { totalVerses: number }) {
   return (
     <div className="space-y-6">
-      {[...Array(total_verses)].map((_, i) => (
+      {[...Array(totalVerses)].map((_, i) => (
         <div key={i} className="p-4 rounded-lg bg-gray-50">
           <Skeleton className="h-8 w-full mb-4" />
           <Skeleton className="h-4 w-3/4 mb-2" />
           <Skeleton className="h-4 w-1/2" />
         </div>
       ))}
+    </div>
+  )
+}
+
+function VerseItem({ verse, index }: { verse: { id: number; text: string; translation: string }; index: number }) {
+  return (
+    <div className={`p-4 rounded-lg ${index % 2 === 0 ? "bg-muted" : "bg-background"}`}>
+      <div className="text-right mb-4">
+        <span className="font-arabic text-2xl leading-loose">{verse.text}</span>
+        <span className="text-muted-foreground text-sm ml-2">({verse.id})</span>
+      </div>
+      <div className="space-y-2 text-sm">
+        <p className="text-foreground">{verse.translation}</p>
+      </div>
     </div>
   )
 }
@@ -60,7 +74,6 @@ async function SurahContent({ id }: { id: string }) {
           <p className="text-sm md:text-base mb-2">
             {chapter.translation} • {chapter.total_verses} Verses • {chapter.type}
           </p>
-
           <div className="mt-4 text-xl md:text-2xl font-arabic">﴿ بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ ﴾</div>
           <p className="text-sm md:text-base">শুরু করছি আল্লাহর নামে যিনি পরম করুণাময়, অতি দয়ালু।</p>
         </div>
@@ -82,7 +95,6 @@ async function SurahContent({ id }: { id: string }) {
           ) : (
             <div />
           )}
-
           {nextId ? (
             <Link href={`/surah/${nextId}`}>
               <Button variant="ghost" className="text-primary">
@@ -98,21 +110,9 @@ async function SurahContent({ id }: { id: string }) {
 
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto space-y-6">
-          {[...Array(chapter.total_verses)].map((_, index) => {
-            const verse = chapter.verses[index]
-            return (
-              <div key={index} className={`p-4 rounded-lg ${index % 2 === 0 ? "bg-muted" : "bg-background"}`}>
-                <div className="text-right mb-4">
-                  <span className="font-arabic text-2xl leading-loose">{verse?.text || "Loading..."}</span>
-                  <span className="text-muted-foreground text-sm ml-2">({index + 1})</span>
-                </div>
-
-                <div className="space-y-2 text-sm">
-                  <p className="text-foreground">{verse?.translation || "Translation loading..."}</p>
-                </div>
-              </div>
-            )
-          })}
+          {chapter.verses.map((verse, index) => (
+            <VerseItem key={verse.id} verse={verse} index={index} />
+          ))}
         </div>
       </main>
     </>
@@ -122,7 +122,7 @@ async function SurahContent({ id }: { id: string }) {
 export default function SurahPage({ params }: PageProps) {
   return (
     <div className="min-h-screen bg-background">
-      <Suspense fallback={<LoadingSkeleton totalVerses={286} />}>
+      <Suspense fallback={<LoadingSkeleton totalVerses={20} />}>
         <SurahContent id={params.id} />
       </Suspense>
     </div>
