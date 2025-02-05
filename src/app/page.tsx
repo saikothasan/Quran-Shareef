@@ -1,101 +1,120 @@
-import Image from "next/image";
+import Link from "next/link"
+import { Card, CardContent } from "@/components/ui/card"
+import { getChapters } from "@/lib/quran"
+import { Skeleton } from "@/components/ui/skeleton"
+import { Suspense } from "react"
+import type { Metadata } from "next"
+import { Search } from "lucide-react"
+import { Input } from "@/components/ui/input"
+
+export const metadata: Metadata = {
+  title: "Explore the Holy Quran",
+  description: "Browse all 114 Surahs of the Holy Quran with translations and audio recitations",
+  openGraph: {
+    title: "Explore the Holy Quran | Quraan Shareef",
+    description: "Browse all 114 Surahs of the Holy Quran with translations and audio recitations",
+  },
+}
+
+function LoadingSkeleton() {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      {[...Array(8)].map((_, i) => (
+        <Card key={i}>
+          <CardContent className="p-4">
+            <Skeleton className="h-6 w-16 mb-2" />
+            <Skeleton className="h-8 w-full mb-2" />
+            <Skeleton className="h-4 w-3/4" />
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  )
+}
+
+async function SurahGrid() {
+  try {
+    const chapters = await getChapters()
+
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {chapters.map((chapter) => (
+          <Link href={`/surah/${chapter.id}`} key={chapter.id}>
+            <Card className="hover:bg-muted/50 transition-colors">
+              <CardContent className="p-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span className="text-sm text-muted-foreground">#{chapter.id}</span>
+                  <span className="text-sm text-muted-foreground">{chapter.verses_count} verses</span>
+                </div>
+                <div className="text-xl font-arabic mb-1">{chapter.name_arabic}</div>
+                <div className="text-sm text-muted-foreground">
+                  {chapter.name_simple} • {chapter.translated_name.name}
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
+    )
+  } catch (error) {
+    console.error("Error in SurahGrid:", error)
+    return (
+      <div className="text-center">
+        <p className="text-red-500 mb-4">Failed to load Quran data. Please try again later.</p>
+        <p className="text-sm text-gray-600 mb-4">
+          Error details: {error instanceof Error ? error.message : "Unknown error"}
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="bg-primary text-primary-foreground hover:bg-primary/90 font-bold py-2 px-4 rounded"
+        >
+          Retry
+        </button>
+      </div>
+    )
+  }
+}
 
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-background">
+      <header className="bg-primary text-primary-foreground py-6">
+        <div className="container mx-auto px-4">
+          <h1 className="text-2xl md:text-3xl font-bold mb-6">Quraan Shareef</h1>
+          <div className="relative max-w-2xl mx-auto">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input type="search" placeholder="Search surah..." className="w-full pl-9 bg-background text-foreground" />
+            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+              <kbd className="hidden sm:inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground">
+                <span className="text-xs">⌘</span>K
+              </kbd>
+            </div>
+          </div>
         </div>
+      </header>
+
+      <nav className="border-b bg-card">
+        <div className="container mx-auto px-4 py-2">
+          <div className="flex gap-4 overflow-x-auto text-sm">
+            {["About The Quran", "Al Mulk", "Yaseen", "Al Kahf", "Al Waqi'ah"].map((item) => (
+              <Link key={item} href="#" className="whitespace-nowrap text-muted-foreground hover:text-foreground">
+                {item}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </nav>
+
+      <main className="container mx-auto px-4 py-8">
+        <Suspense fallback={<LoadingSkeleton />}>
+          <SurahGrid />
+        </Suspense>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      <footer className="bg-primary text-primary-foreground py-3 text-center mt-8">
+        <p className="text-sm">© {new Date().getFullYear()} Quraan Shareef</p>
       </footer>
     </div>
-  );
+  )
 }
+
