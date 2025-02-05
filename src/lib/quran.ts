@@ -66,8 +66,11 @@ export async function getChapter(id: string): Promise<ChapterDetail> {
     )
   }
 
-  const [chapterData, versesData, translationData]: [ChapterResponse, VersesResponse, TranslationResponse] =
-    await Promise.all([chapterResponse.json(), versesResponse.json(), translationResponse.json()])
+  const [chapterData, versesData, translationData] = await Promise.all([
+    chapterResponse.json().then((data): ChapterResponse => data as ChapterResponse),
+    versesResponse.json().then((data): VersesResponse => data as VersesResponse),
+    translationResponse.json().then((data): TranslationResponse => data as TranslationResponse),
+  ])
 
   return {
     ...chapterData.chapter,
