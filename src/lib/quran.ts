@@ -84,6 +84,10 @@ const chapterDetailsCache = new Map<number, ChapterDetail>()
 
 export async function getChapter(id: string): Promise<ChapterDetail> {
   const chapterId = Number.parseInt(id, 10)
+  if (isNaN(chapterId) || chapterId < 1 || chapterId > 114) {
+    throw new Error("Invalid chapter ID")
+  }
+
   const cached = chapterDetailsCache.get(chapterId)
   if (cached) {
     return cached
@@ -129,10 +133,18 @@ export async function getVerses(chapterId: string): Promise<Verse[]> {
 }
 
 export function getAudioUrl(chapterId: string): string {
-  return `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${chapterId}.mp3`
+  const id = Number.parseInt(chapterId, 10)
+  if (isNaN(id) || id < 1 || id > 114) {
+    throw new Error("Invalid chapter ID")
+  }
+  return `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${id}.mp3`
 }
 
 export function getFallbackAudioUrl(chapterId: string): string {
-  return `https://cdn.islamic.network/quran/audio-surah/128/ar.ahmedajamy/${chapterId}.mp3`
+  const id = Number.parseInt(chapterId, 10)
+  if (isNaN(id) || id < 1 || id > 114) {
+    throw new Error("Invalid chapter ID")
+  }
+  return `https://cdn.islamic.network/quran/audio-surah/128/ar.ahmedajamy/${id}.mp3`
 }
 
