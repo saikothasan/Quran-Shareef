@@ -23,11 +23,11 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://www.yourquranapp.com/",
+    url: "https://quran-shareef.pages.dev/",
     siteName: "Quraan Shareef",
     images: [
       {
-        url: "https://www.yourquranapp.com/og-image.jpg", // Replace with your actual Open Graph image
+        url: "https://quran-shareef.pages.dev/icon.png", // Replace with your actual Open Graph image
         width: 1200,
         height: 630,
         alt: "Quraan Shareef",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
+    shortcut: "/favicon-96x96.png",
     apple: "/apple-touch-icon.png",
   },
   manifest: "/site.webmanifest", // Make sure to create this file in your public folder
