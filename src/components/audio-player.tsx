@@ -79,24 +79,34 @@ export function AudioPlayer({ audioUrl }: AudioPlayerProps) {
   }
 
   return (
-    <div className="bg-muted p-4 rounded-lg">
+    <div className="bg-secondary p-4 rounded-lg shadow-md">
       <audio ref={audioRef} src={audioUrl} />
       <div className="flex items-center justify-between mb-4">
-        <Button variant="outline" size="icon" onClick={togglePlay}>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={togglePlay}
+          className="text-primary hover:text-primary-foreground hover:bg-primary"
+        >
           {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
         </Button>
-        <Button variant="outline" size="icon" onClick={restart}>
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={restart}
+          className="text-primary hover:text-primary-foreground hover:bg-primary"
+        >
           <RotateCcw className="h-4 w-4" />
         </Button>
         <div className="flex items-center flex-grow mx-4">
           <Slider value={[currentTime]} max={duration} step={1} onValueChange={onSliderChange} className="w-full" />
         </div>
-        <div className="text-sm">
+        <div className="text-sm text-muted-foreground">
           {formatTime(currentTime)} / {formatTime(duration)}
         </div>
       </div>
       <div className="flex items-center">
-        <Volume2 className="h-4 w-4 mr-2" />
+        <Volume2 className="h-4 w-4 mr-2 text-primary" />
         <Slider value={[volume]} max={1} step={0.1} onValueChange={onVolumeChange} className="w-24" />
       </div>
     </div>
