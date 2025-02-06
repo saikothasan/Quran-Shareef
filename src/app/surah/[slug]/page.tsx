@@ -1,4 +1,4 @@
-import { getChapterByName, getAudioUrl, slugify } from "@/lib/quran"
+import { getChapterBySlug, getAudioUrl, slugify } from "@/lib/quran"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Suspense } from "react"
 import Link from "next/link"
@@ -14,7 +14,7 @@ interface PageProps {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const chapter = await getChapterByName(params.slug.replace(/-/g, " "))
+  const chapter = await getChapterBySlug(params.slug)
 
   return {
     title: `Surah ${chapter.name_simple} (${chapter.translated_name.name})`,
@@ -47,7 +47,7 @@ function LoadingSkeleton() {
 }
 
 async function SurahContent({ slug }: { slug: string }) {
-  const chapter = await getChapterByName(slug.replace(/-/g, " "))
+  const chapter = await getChapterBySlug(slug)
   const audioUrl = getAudioUrl(chapter.id.toString())
 
   return (
