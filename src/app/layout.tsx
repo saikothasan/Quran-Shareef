@@ -1,4 +1,4 @@
-mport "./globals.css"
+import "./globals.css"
 import { Inter } from "next/font/google"
 import type React from "react"
 import type { Metadata } from "next"
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     siteName: "বাংলা কুরআন শরীফ",
     images: [
       {
-        url: "https://quran-shareef.pages.dev/",
+        url: "https://quran-shareef.pages.dev/splash.png",
         width: 1200,
         height: 630,
         alt: "বাংলা কুরআন শরীফ",
