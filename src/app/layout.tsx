@@ -1,20 +1,33 @@
-import "./globals.css"
+mport "./globals.css"
 import { Inter } from "next/font/google"
 import type React from "react"
 import type { Metadata } from "next"
 
-const inter = Inter({ subsets: ["latin"] })
+const inter = Inter({ subsets: ["latin", "bengali"] })
 
 export const metadata: Metadata = {
   title: {
-    default: "Quraan Shareef",
-    template: "%s | Quraan Shareef",
+    default: "বাংলা কুরআন শরীফ | Bangla Quran Shareef",
+    template: "%s | বাংলা কুরআন শরীফ",
   },
-  description: "Read and explore the Holy Quran with translations and audio recitations",
-  keywords: ["Quran", "Islam", "Holy Book", "Surah", "Ayah", "Recitation"],
-  authors: [{ name: "Your Name" }],
-  creator: "Your Name",
-  publisher: "Your Name or Organization",
+  description: "পবিত্র কুরআন শরীফের বাংলা অনুবাদ পড়ুন এবং শুনুন। আরবি টেক্সট, বাংলা অনুবাদ এবং অডিও রেসিটেশন সহ।",
+  keywords: [
+    "কুরআন",
+    "বাংলা কুরআন",
+    "ইসলাম",
+    "সূরা",
+    "আয়াত",
+    "তিলাওয়াত",
+    "Quran",
+    "Bangla Quran",
+    "Islam",
+    "Surah",
+    "Ayah",
+    "Recitation",
+  ],
+  authors: [{ name: "Saikothasan" }],
+  creator: "saikothasan",
+  publisher: "Saikothasan",
   formatDetection: {
     email: false,
     address: false,
@@ -22,29 +35,29 @@ export const metadata: Metadata = {
   },
   openGraph: {
     type: "website",
-    locale: "en_US",
+    locale: "bn_BD",
     url: "https://quran-shareef.pages.dev/",
-    siteName: "Quraan Shareef",
+    siteName: "বাংলা কুরআন শরীফ",
     images: [
       {
-        url: "https://quran-shareef.pages.dev/quran_7337555.png", // Replace with your actual Open Graph image
+        url: "https://quran-shareef.pages.dev/",
         width: 1200,
         height: 630,
-        alt: "Quraan Shareef",
+        alt: "বাংলা কুরআন শরীফ",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    site: "@yourtwitter", // Replace with your Twitter handle
-    creator: "@yourtwitter", // Replace with your Twitter handle
+    site: "@yourtwitter",
+    creator: "@yourtwitter",
   },
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon-96x96.png",
     apple: "/apple-touch-icon.png",
   },
-  manifest: "/site.webmanifest", // Make sure to create this file in your public folder
+  manifest: "/site.webmanifest",
   other: {
     "google-site-verification": "KEFnhFSHJewJRRzfWnTjsmHd4hkOV1_2_KF4SoGwaBY",
   },
@@ -56,10 +69,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <head>
-        <meta name="google-site-verification" content="KEFnhFSHJewJRRzfWnTjsmHd4hkOV1_2_KF4SoGwaBY" />
-      </head>
+    <html lang="bn">
       <body className={inter.className}>{children}</body>
     </html>
   )
