@@ -34,14 +34,14 @@ async function SurahContent({ id }: { id: string }) {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold text-center mb-2">{chapter.name_simple}</h1>
+      <h1 className="text-3xl font-bold text-center mb-2 text-primary">{chapter.name_simple}</h1>
       <p className="text-center text-muted-foreground mb-6">{chapter.translated_name.name}</p>
 
       <AudioPlayer audioUrl={audioUrl} />
 
       <div className="my-8">
         {chapter.verses.map((verse) => (
-          <div key={verse.id} className="mb-6 p-4 bg-muted rounded-lg">
+          <div key={verse.id} className="mb-6 p-4 bg-secondary rounded-lg">
             <p className="text-2xl font-arabic text-right mb-2">{verse.text}</p>
             <p className="text-sm">{verse.translation}</p>
             <span className="text-xs text-muted-foreground">{verse.id}</span>
