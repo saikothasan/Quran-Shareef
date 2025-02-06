@@ -2,6 +2,7 @@ import "./globals.css"
 import { Inter } from "next/font/google"
 import type React from "react"
 import type { Metadata } from "next"
+import { GoogleAnalytics } from "@/components/google-analytics"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -71,6 +72,7 @@ export default function RootLayout({
   return (
     <html lang="bn">
       <body className={inter.className}>{children}</body>
+      <GoogleAnalytics />
     </html>
   )
 }
