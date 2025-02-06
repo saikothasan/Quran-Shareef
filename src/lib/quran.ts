@@ -54,12 +54,12 @@ export async function getChapters(): Promise<Chapter[]> {
   return data.chapters
 }
 
-export async function getChapterByName(name: string): Promise<ChapterDetail> {
+export async function getChapterBySlug(slug: string): Promise<ChapterDetail> {
   const chapters = await getChapters()
-  const chapter = chapters.find((c) => c.name_simple.toLowerCase() === name.toLowerCase())
+  const chapter = chapters.find((c) => slugify(c.name_simple) === slug)
 
   if (!chapter) {
-    throw new Error(`Chapter not found: ${name}`)
+    throw new Error(`Chapter not found: ${slug}`)
   }
 
   return getChapter(chapter.id.toString())
