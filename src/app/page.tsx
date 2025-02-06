@@ -1,10 +1,24 @@
 import Link from "next/link"
-import { getChapters } from "@/lib/quran"
+import { getChapters, slugify } from "@/lib/quran"
 import { Card, CardContent } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Suspense } from "react"
+import type { Metadata } from "next"
 
 export const runtime = "edge"
+
+export const metadata: Metadata = {
+  title: "The Noble Quran - Surah List",
+  description: "Explore all 114 surahs of the Holy Quran with translations and audio recitations",
+  openGraph: {
+    title: "The Noble Quran - Surah List",
+    description: "Explore all 114 surahs of the Holy Quran with translations and audio recitations",
+  },
+  twitter: {
+    title: "The Noble Quran - Surah List",
+    description: "Explore all 114 surahs of the Holy Quran with translations and audio recitations",
+  },
+}
 
 function LoadingSkeleton() {
   return (
@@ -27,7 +41,7 @@ async function SurahGrid() {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {chapters.map((chapter) => (
-        <Link href={`/surah/${chapter.id}`} key={chapter.id}>
+        <Link href={`/surah/${slugify(chapter.name_simple)}`} key={chapter.id}>
           <Card className="hover:bg-secondary transition-colors">
             <CardContent className="p-4">
               <div className="flex justify-between items-center mb-2">
@@ -54,4 +68,3 @@ export default function Home() {
     </div>
   )
 }
-
