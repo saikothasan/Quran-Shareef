@@ -8,6 +8,7 @@ export interface Chapter {
   id: number
   name_arabic: string
   name_simple: string
+  name_complex: string
   translated_name: {
     name: string
   }
@@ -53,6 +54,17 @@ export async function getChapters(): Promise<Chapter[]> {
   return data.chapters
 }
 
+export async function getChapterByName(name: string): Promise<ChapterDetail> {
+  const chapters = await getChapters()
+  const chapter = chapters.find((c) => c.name_simple.toLowerCase() === name.toLowerCase())
+
+  if (!chapter) {
+    throw new Error(`Chapter not found: ${name}`)
+  }
+
+  return getChapter(chapter.id.toString())
+}
+
 export async function getChapter(id: string): Promise<ChapterDetail> {
   const [chapterResponse, versesResponse, translationResponse] = await Promise.all([
     fetch(`https://api.quran.com/api/v4/chapters/${id}?language=bn`),
@@ -84,5 +96,9 @@ export async function getChapter(id: string): Promise<ChapterDetail> {
 
 export function getAudioUrl(chapterId: string): string {
   return `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${chapterId}.mp3`
+}
+
+export function slugify(name: string): string {
+  return name.toLowerCase().replace(/\s+/g, "-")
 }
 
