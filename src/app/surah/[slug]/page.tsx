@@ -17,15 +17,15 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const chapter = await getChapterBySlug(params.slug)
 
   return {
-    title: `Surah ${chapter.name_simple} (${chapter.translated_name.name})`,
-    description: `Read and listen to Surah ${chapter.name_simple} (${chapter.translated_name.name}) with translation. ${chapter.verses_count} verses.`,
+    title: `সূরা ${chapter.name_simple} (${chapter.translated_name.name})`,
+    description: `সূরা ${chapter.name_simple} (${chapter.translated_name.name}) পড়ুন এবং শুনুন। বাংলা অনুবাদসহ ${chapter.verses_count}টি আয়াত।`,
     openGraph: {
-      title: `Surah ${chapter.name_simple} (${chapter.translated_name.name})`,
-      description: `Read and listen to Surah ${chapter.name_simple} (${chapter.translated_name.name}) with translation. ${chapter.verses_count} verses.`,
+      title: `সূরা ${chapter.name_simple} (${chapter.translated_name.name})`,
+      description: `সূরা ${chapter.name_simple} (${chapter.translated_name.name}) পড়ুন এবং শুনুন। বাংলা অনুবাদসহ ${chapter.verses_count}টি আয়াত।`,
     },
     twitter: {
-      title: `Surah ${chapter.name_simple} (${chapter.translated_name.name})`,
-      description: `Read and listen to Surah ${chapter.name_simple} (${chapter.translated_name.name}) with translation. ${chapter.verses_count} verses.`,
+      title: `সূরা ${chapter.name_simple} (${chapter.translated_name.name})`,
+      description: `সূরা ${chapter.name_simple} (${chapter.translated_name.name}) পড়ুন এবং শুনুন। বাংলা অনুবাদসহ ${chapter.verses_count}টি আয়াত।`,
     },
   }
 }
@@ -59,7 +59,7 @@ async function SurahContent({ slug }: { slug: string }) {
 
       <div className="my-8">
         {chapter.verses.map((verse) => (
-          <div key={verse.id} className="mb-6 p-4 bg-secondary rounded-lg">
+          <div key={verse.id} className="mb-6 p-4 bg-accent rounded-lg">
             <p className="text-2xl font-arabic text-right mb-2">{verse.text}</p>
             <p className="text-sm">{verse.translation}</p>
             <span className="text-xs text-muted-foreground">{verse.id}</span>
@@ -71,14 +71,14 @@ async function SurahContent({ slug }: { slug: string }) {
         {chapter.id > 1 && (
           <Link href={`/surah/${slugify((chapter.id - 1).toString())}`}>
             <Button variant="outline">
-              <ChevronLeft className="mr-2 h-4 w-4" /> Previous Surah
+              <ChevronLeft className="mr-2 h-4 w-4" /> পূর্ববর্তী সূরা
             </Button>
           </Link>
         )}
         {chapter.id < 114 && (
           <Link href={`/surah/${slugify((chapter.id + 1).toString())}`}>
             <Button variant="outline">
-              Next Surah <ChevronRight className="ml-2 h-4 w-4" />
+              পরবর্তী সূরা <ChevronRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
         )}
