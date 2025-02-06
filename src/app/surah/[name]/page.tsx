@@ -5,11 +5,29 @@ import Link from "next/link"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { AudioPlayer } from "@/components/audio-player"
+import type { Metadata } from "next"
 
 export const runtime = "edge"
 
 interface PageProps {
   params: { name: string }
+}
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const chapter = await getChapterByName(params.name.replace(/-/g, " "))
+
+  return {
+    title: `Surah ${chapter.name_simple} (${chapter.translated_name.name})`,
+    description: `Read and listen to Surah ${chapter.name_simple} (${chapter.translated_name.name}) with translation. ${chapter.verses_count} verses.`,
+    openGraph: {
+      title: `Surah ${chapter.name_simple} (${chapter.translated_name.name})`,
+      description: `Read and listen to Surah ${chapter.name_simple} (${chapter.translated_name.name}) with translation. ${chapter.verses_count} verses.`,
+    },
+    twitter: {
+      title: `Surah ${chapter.name_simple} (${chapter.translated_name.name})`,
+      description: `Read and listen to Surah ${chapter.name_simple} (${chapter.translated_name.name}) with translation. ${chapter.verses_count} verses.`,
+    },
+  }
 }
 
 function LoadingSkeleton() {
